@@ -1,5 +1,6 @@
 {
     "require": {
-        "instaclick/php-webdriver": ">=0.*"
-    }
+        "instaclick/php-webdriver": ">=0.0"
+    },
+    "minimum-stability": "dev"
 }
