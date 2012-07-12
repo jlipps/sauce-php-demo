@@ -3,4 +3,5 @@ composer.lock
 vendor/
 assets/
 protected/runtime/
+protected/data/*.db
 themes/classic/views/

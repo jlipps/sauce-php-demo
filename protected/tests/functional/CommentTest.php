@@ -1,6 +1,6 @@
 <?php
 
-class CommentTest extends SeleniumTestCase
+class CommentTest extends CSeleniumTestCase
 {
 	/**
 	 * We use both 'Post' and 'Comment' fixtures.

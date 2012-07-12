@@ -8,7 +8,6 @@ use WebDriver\WebDriver;
 abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
 {
 
-    protected static $base_url = "http://localhost/yiidemo/";
     protected static $strategy_map = array(
         'css' => 'css selector',
         'class' => 'class name',
@@ -63,14 +62,6 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
     }
 
     // WEBDRIVER HELPERS
-
-    protected function open($url)
-    {
-        if (strpos($url, self::$base_url) === false) {
-            $url = self::$base_url.'index.php/'.$url;
-        }
-        return $this->sess->open($url);
-    }
 
     private function bodyText() {
         $body = $this->elementByTag('body');
