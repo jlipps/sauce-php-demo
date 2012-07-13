@@ -1,6 +1,6 @@
 <?php
 
-class CommentTest extends CSeleniumTestCase
+abstract class CommentTest extends CSeleniumTestCase
 {
     /**
      * We use both 'Post' and 'Comment' fixtures.
@@ -11,26 +11,42 @@ class CommentTest extends CSeleniumTestCase
         'comments'=>'Comment',
     );
 
-    public function testCreate()
+    public function setUp()
     {
+        parent::setUp();
         $this->open('post/1/xyz');
+    }
 
+    public function testDisplay()
+    {
         // verify the sample post title exists
-        $this->assertTextPresent($this->posts['sample1']['title']);
-        $this->assertElementPresent("name=Comment[author]");
+        $this->assertTextPresent($this->f->posts['sample1']['title']);
+        $this->elementByName("Comment[author]");
+    }
 
+    public function testValidation()
+    {
         // verify validation errors
-        $this->clickAndWait("//input[@value='Submit']");
+        $this->elementByXpath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Name cannot be blank.');
         $this->assertTextPresent('Email cannot be blank.');
         $this->assertTextPresent('Comment cannot be blank.');
+    }
 
+    public function testAdd()
+    {
         // verify commenting is successful
         $comment="comment 1";
-        $this->type('name=Comment[author]','me');
-        $this->type('name=Comment[email]','me@example.com');
-        $this->type('name=Comment[content]',$comment);
-        $this->clickAndWait("//input[@value='Submit']");
+        $this->sendKeys($this->elementByName('Comment[author]'),'me');
+        $this->sendKeys($this->elementByName('Comment[email]'),'me@example.com');
+        $this->sendKeys($this->elementByName('Comment[content]'),$comment);
+        $this->elementByXpath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Thank you for your comment');
     }
 }
+
+
+eval(onPlatforms('firefox', array(), 'CommentTest'));
+$klass = 'CommentTest_firefox';
+$obj = new $klass();
+print_r($obj);

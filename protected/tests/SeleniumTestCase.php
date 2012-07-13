@@ -1,12 +1,17 @@
 <?php
 
 require_once('PHPUnit/Runner/Version.php');
-require_once('PHPUnit/Autoload.php');
+
 
 use WebDriver\WebDriver;
 
 abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
 {
+    protected $wd_host = 'http://localhost';
+    protected $wd_port = '4444';
+    protected $wd_hub = '/wd/hub';
+    protected $browser_name = 'firefox';
+    protected $caps = array();
 
     protected static $strategy_map = array(
         'css' => 'css selector',
@@ -16,16 +21,19 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
     );
 
     public function __construct(
-        $wd_host='http://localhost',
-        $wd_port='4444',
-        $wd_hub='/wd/hub',
-        $browser_name = 'firefox',
-        $caps=array()
+        $wd_host=false,
+        $wd_port=false,
+        $wd_hub=false,
+        $browser_name=false,
+        $caps=false
     )
     {
-        $this->wd_string = $wd_host.':'.$wd_port.$wd_hub;
-        $this->browser_name = $browser_name;
-        $this->caps = $caps;
+        $this->wd_host = $wd_host ?: $this->wd_host;
+        $this->wd_port = $wd_port ?: $this->wd_port;
+        $this->wd_hub = $wd_hub ?: $this->wd_hub;
+        $this->wd_string = $this->wd_host.':'.$this->wd_port.$this->wd_hub;
+        $this->browser_name = $browser_name ?: $this->browser_name;
+        $this->caps = $caps ?: $this->caps;
     }
 
     public function __call($name, $arguments)
@@ -108,4 +116,26 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
     {
         $this->sess->close();
     }
+}
+
+function onPlatforms($browser, $caps, $extends)
+{
+    $evalcaps = '';
+    foreach($caps as $k => $v) {
+        $evalcaps .= "\$this->caps['$k'] = '$v';\n";
+    }
+    $evalstr = <<<"EOF"
+class {$extends}_{$browser} extends {$extends}
+{
+    protected \$browser_name = {$browser};
+    protected \$caps = array();
+
+    public function __construct()
+    {
+        {$evalcaps}
+        parent::__construct();
+    }
+}
+EOF;
+    return $evalstr;
 }
