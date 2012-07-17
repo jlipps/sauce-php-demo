@@ -43,27 +43,5 @@ class CommentTest extends CWebDriverTestCase
         $this->elementByXpath("//input[@value='Submit']")->click();
         $this->waitForText('Thank you for your comment');
     }
-
-    public function testAdd2()
-    {
-       // verify commenting is successful
-        $comment="comment 1";
-        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
-        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
-        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
-        $this->elementByXpath("//input[@value='Submit']")->click();
-        $this->waitForText('Thank you for your comment');
-    }
-
-    public function testAdd3()
-    {
-       // verify commenting is successful
-        $comment="comment 1";
-        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
-        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
-        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
-        $this->elementByXpath("//input[@value='Submit']")->click();
-        $this->waitForText('Thank you for your comment');
-    }
 }
 
