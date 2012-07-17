@@ -5,6 +5,8 @@ require_once('PHPUnit/Runner/Version.php');
 
 use WebDriver\WebDriver;
 
+define('SAUCE_HOST', 'http://'.getenv('SAUCE_USERNAME').':'.getenv('SAUCE_ACCESS_KEY').'@ondemand.saucelabs.com');
+
 abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
 {
     protected $wd_host = 'http://localhost';
@@ -47,10 +49,13 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
         foreach (array('wd_host', 'wd_port', 'wd_hub', 'name', 'caps') as $k)
             if (!isset($browser[$k]))
                 $browser[$k] = false;
-        //print_r($browser);
-        $this->wd_host = $browser['wd_host'] ?: $this->wd_host;
-        $this->wd_port = $browser['wd_port'] ?: $this->wd_port;
-        $this->wd_hub = $browser['wd_hub'] ?: $this->wd_hub;
+        $using_sauce = isset($browser['sauce']) && $browser['sauce'];
+        $def_host = $using_sauce ? SAUCE_HOST : $this->wd_host;
+        $def_port = $using_sauce ? '80': $this->wd_port;
+        $def_hub = $using_sauce ? '' : $this->wd_hub;
+        $this->wd_host = $browser['wd_host'] ?: $def_host;
+        $this->wd_port = $browser['wd_port'] ?: $def_port;
+        $this->wd_hub = $browser['wd_hub'] ?: $def_hub;
         $this->browser_name = $browser['name'] ?: $this->browser_name;
         $this->caps = $browser['caps'] ?: $this->caps;
         $this->setUpDriver();
@@ -59,10 +64,13 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     protected function setUpDriver()
     {
         $this->wd = new WebDriver($this->wd_host.':'.$this->wd_port.$this->wd_hub);
+        echo "\n$this->wd_host".':'.$this->wd_port.$this->wd_hub;
     }
 
     protected function setUp()
     {
+        if (!isset($this->caps['name']))
+            $this->caps['name'] = $this->getName();
         $this->sess = $this->wd->session($this->browser_name, $this->caps);
         $this->sess->timeouts()->implicit_wait(array('ms'=>5000));
     }
@@ -137,6 +145,17 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     protected function isTextPresent($text)
     {
         return strpos($this->bodyText(), $text) !== false;
+    }
+
+    protected function waitForText($text, $timeout=10)
+    {
+        $present = $this->isTextPresent($text);
+        $start_time = time();
+        while (!$present && (time() - $start_time) < $timeout) {
+            sleep(1);
+            $present = $this->isTextPresent($text);
+        }
+        $this->assertTrue($present);
     }
 
     // POSITIVE ASSERTIONS

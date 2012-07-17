@@ -20,7 +20,7 @@ class CommentTest extends CWebDriverTestCase
     public function testDisplay()
     {
         // verify the sample post title exists
-        $this->assertTextPresent($this->f->posts['sample1']['title']);
+        $this->waitForText($this->f->posts['sample1']['title']);
         $this->elementByName("Comment[author]");
     }
 
@@ -28,20 +28,42 @@ class CommentTest extends CWebDriverTestCase
     {
         // verify validation errors
         $this->elementByXpath("//input[@value='Submit']")->click();
-        $this->assertTextPresent('Name cannot be blank.');
-        $this->assertTextPresent('Email cannot be blank.');
-        $this->assertTextPresent('Comment cannot be blank.');
+        $this->waitForText('Name cannot be blank.');
+        $this->waitForText('Email cannot be blank.');
+        $this->waitForText('Comment cannot be blank.');
     }
 
     public function testAdd()
     {
-        // verify commenting is successful
+       // verify commenting is successful
         $comment="comment 1";
         $this->sendKeys($this->elementByName('Comment[author]'), 'me');
         $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
         $this->sendKeys($this->elementByName('Comment[content]'), $comment);
         $this->elementByXpath("//input[@value='Submit']")->click();
-        $this->assertTextPresent('Thank you for your comment');
+        $this->waitForText('Thank you for your comment');
+    }
+
+    public function testAdd2()
+    {
+       // verify commenting is successful
+        $comment="comment 1";
+        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
+        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
+        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
+        $this->elementByXpath("//input[@value='Submit']")->click();
+        $this->waitForText('Thank you for your comment');
+    }
+
+    public function testAdd3()
+    {
+       // verify commenting is successful
+        $comment="comment 1";
+        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
+        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
+        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
+        $this->elementByXpath("//input[@value='Submit']")->click();
+        $this->waitForText('Thank you for your comment');
     }
 }
 

@@ -138,9 +138,9 @@ function handleOutput($id, $output)
         // print_r($matches);
     }
 
-    preg_match("/^There ((was)|(were)) [0-9]+ error.+\n\n(.+)\nFAIL/Ums", $output, $matches);
-    if (count($matches) == 5) {
-        $error_str = trim($matches[4]);
+    preg_match("/^There ((was)|(were)) [0-9]+ ((error)|(failure)).+\n\n(.+)\nFAIL/Ums", $output, $matches);
+    if (count($matches) == 8) {
+        $error_str = trim($matches[7]);
         $split_errors = preg_split("/^[0-9]+\) /m", $error_str);
         foreach ($split_errors as $error) {
             if (trim($error))

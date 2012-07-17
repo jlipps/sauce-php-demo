@@ -27,4 +27,15 @@ class PostTest extends CWebDriverTestCase
         // verify comment form exists
         $this->assertTextPresent('Leave a Comment');
     }
+
+    public function testUpdate()
+    {
+        $new_title = "This is a new title!";
+        $this->login('demo');
+        $this->open('/post/update?id=1');
+        $this->sendKeys($this->elementByName('Post[title]'), $new_title);
+        $this->elByXpath("//input[@value='Save']")->click();
+        $this->assertTextPresent($new_title);
+    }
+
 }

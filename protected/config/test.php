@@ -1,4 +1,5 @@
 <?php
+define('TEST_MODE', true);
 
 return CMap::mergeArray(
 	require(dirname(__FILE__).'/main.php'),

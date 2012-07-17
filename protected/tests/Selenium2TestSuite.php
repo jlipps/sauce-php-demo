@@ -1,4 +1,10 @@
 <?php
+
+if(getenv('WD_TARGET') == 'sauce')
+    define('BROWSER_SUITE_PROP', 'browsers_sauce');
+else
+    define('BROWSER_SUITE_PROP', 'browsers');
+
 class Selenium2TestSuite extends PHPUnit_Framework_TestSuite
 {
     /**
@@ -29,8 +35,8 @@ class Selenium2TestSuite extends PHPUnit_Framework_TestSuite
         $staticProperties = $class->getStaticProperties();
 
         // Create tests from test methods for multiple browsers.
-        if (!empty($staticProperties['browsers'])) {
-            foreach ($staticProperties['browsers'] as $browser) {
+        if (!empty($staticProperties[BROWSER_SUITE_PROP])) {
+            foreach ($staticProperties[BROWSER_SUITE_PROP] as $browser) {
                 $browserSuite = Selenium2BrowserSuite::fromClassAndBrowser($className, $browser);
                 foreach ($class->getMethods() as $method) {
                     $browserSuite->addTestMethod($class, $method);

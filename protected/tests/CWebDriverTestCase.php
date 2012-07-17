@@ -16,8 +16,27 @@ class CWebDriverTestCase extends WebDriverTestCase
         array(
             'name'=>'firefox'
         ),
+        // array(
+        //     'name'=>'chrome'
+        // )
+    );
+
+    public static $browsers_sauce = array(
         array(
-            'name'=>'chrome'
+            'name'=>'firefox',
+            'sauce'=>true,
+            'caps' => array(
+                'platform' => 'Windows 2008',
+                'version' => '13'
+            )
+        ),
+        array(
+            'name'=>'chrome',
+            'sauce'=>true,
+            'caps' => array(
+                'platform' => 'Windows 2008',
+                'version' => ''
+            )
         )
     );
 
@@ -33,6 +52,12 @@ class CWebDriverTestCase extends WebDriverTestCase
             $url = TEST_BASE_URL.'/'.$url;
         }
         return $this->sess->open($url);
+    }
+
+    protected function login($username)
+    {
+        $this->open('/site/testLogin?u='.$username);
+        $this->waitForText("Logged in $username");
     }
 }
 

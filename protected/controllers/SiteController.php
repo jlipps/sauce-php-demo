@@ -20,6 +20,7 @@ class SiteController extends Controller
 			'page'=>array(
 				'class'=>'CViewAction',
 			),
+
 		);
 	}
 
@@ -82,6 +83,19 @@ class SiteController extends Controller
 		// display the login form
 		$this->render('login',array('model'=>$model));
 	}
+
+
+    public function actionTestLogin()
+    {
+        if (defined('TEST_MODE') && TEST_MODE) {
+            $identity = new UserIdentity($_GET['u'], 'asdf');
+            $identity->authenticate(true);
+            Yii::app()->user->login($identity, 3600*24*30);
+            $this->render('test_login', array('username'=>$_GET['u']));
+        } else {
+            echo "Invalid access.";
+        }
+    }
 
 	/**
 	 * Logs out the current user and redirect to homepage.
