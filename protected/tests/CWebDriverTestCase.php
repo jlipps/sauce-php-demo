@@ -6,11 +6,20 @@
  */
 define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
 
-class CSeleniumTestCase extends SeleniumTestCase
+class CWebDriverTestCase extends WebDriverTestCase
 {
 
     protected $fixtures = false;
     protected $f = false;
+
+    public static $browsers = array(
+        array(
+            'name'=>'firefox'
+        ),
+        array(
+            'name'=>'chrome'
+        )
+    );
 
     protected function setUp()
     {
@@ -59,9 +68,10 @@ class CWebFixture
 
     public function load()
     {
-        if(is_array($this->fixtures))
+        if(is_array($this->fixtures)) {
             $this->manager->load($this->fixtures);
             $this->has_data = true;
+        }
     }
 
     protected function getFixtureData($name)

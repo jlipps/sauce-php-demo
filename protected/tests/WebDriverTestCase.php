@@ -5,13 +5,15 @@ require_once('PHPUnit/Runner/Version.php');
 
 use WebDriver\WebDriver;
 
-abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
+abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
 {
     protected $wd_host = 'http://localhost';
     protected $wd_port = '4444';
     protected $wd_hub = '/wd/hub';
     protected $browser_name = 'firefox';
     protected $caps = array();
+
+    public static $browsers = array();
 
     protected static $strategy_map = array(
         'css' => 'css selector',
@@ -21,6 +23,9 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
     );
 
     public function __construct(
+        $name=NULL,
+        $data=array(),
+        $dataName='',
         $wd_host=false,
         $wd_port=false,
         $wd_hub=false,
@@ -28,12 +33,50 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
         $caps=false
     )
     {
-        $this->wd_host = $wd_host ?: $this->wd_host;
-        $this->wd_port = $wd_port ?: $this->wd_port;
-        $this->wd_hub = $wd_hub ?: $this->wd_hub;
-        $this->wd_string = $this->wd_host.':'.$this->wd_port.$this->wd_hub;
-        $this->browser_name = $browser_name ?: $this->browser_name;
-        $this->caps = $caps ?: $this->caps;
+        parent::__construct($name, $data, $dataName);
+        $this->setUpSpecificBrowser(array(
+            'wd_host' => $wd_host,
+            'wd_port' => $wd_port,
+            'wd_hub' => $wd_hub,
+            'name' => $browser_name,
+            'caps' => $caps));
+    }
+
+    public function setUpSpecificBrowser($browser)
+    {
+        foreach (array('wd_host', 'wd_port', 'wd_hub', 'name', 'caps') as $k)
+            if (!isset($browser[$k]))
+                $browser[$k] = false;
+        //print_r($browser);
+        $this->wd_host = $browser['wd_host'] ?: $this->wd_host;
+        $this->wd_port = $browser['wd_port'] ?: $this->wd_port;
+        $this->wd_hub = $browser['wd_hub'] ?: $this->wd_hub;
+        $this->browser_name = $browser['name'] ?: $this->browser_name;
+        $this->caps = $browser['caps'] ?: $this->caps;
+        $this->setUpDriver();
+    }
+
+    protected function setUpDriver()
+    {
+        $this->wd = new WebDriver($this->wd_host.':'.$this->wd_port.$this->wd_hub);
+    }
+
+    protected function setUp()
+    {
+        $this->sess = $this->wd->session($this->browser_name, $this->caps);
+        $this->sess->timeouts()->implicit_wait(array('ms'=>30000));
+    }
+
+    public function tearDown()
+    {
+        $this->sess->close();
+        //$this->stop();
+    }
+
+    public static function suite($className)
+    {
+        $suite = Selenium2TestSuite::fromTestCaseClass($className);
+        return $suite;
     }
 
     public function __call($name, $arguments)
@@ -52,6 +95,17 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
         }
     }
 
+    public function run(PHPUnit_Framework_TestResult $result = NULL)
+    {
+        if ($result === NULL) {
+            $result = $this->createResult();
+        }
+
+        parent::run($result);
+
+        return $result;
+    }
+
     private function strategyFromCamelCase($raw_strat)
     {
         $names = preg_split('/([[:upper:]][[:lower:]]+)/',
@@ -60,13 +114,6 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
             $names[$i] = strtolower($name);
         }
         return implode(' ', $names);
-    }
-
-    protected function setUp()
-    {
-        $this->wd = new WebDriver($this->wd_string);
-        $this->sess = $this->wd->session($this->browser_name, $this->caps);
-        $this->sess->timeouts()->implicit_wait(array('ms'=>30000));
     }
 
     // WEBDRIVER HELPERS
@@ -110,32 +157,5 @@ abstract class SeleniumTestCase extends PHPUnit_Framework_TestCase
         $this->assertFalse($this->isTextPresent($text));
     }
 
-    // TEARDOWN
-
-    protected function tearDown()
-    {
-        $this->sess->close();
-    }
 }
 
-function onPlatforms($browser, $caps, $extends)
-{
-    $evalcaps = '';
-    foreach($caps as $k => $v) {
-        $evalcaps .= "\$this->caps['$k'] = '$v';\n";
-    }
-    $evalstr = <<<"EOF"
-class {$extends}_{$browser} extends {$extends}
-{
-    protected \$browser_name = {$browser};
-    protected \$caps = array();
-
-    public function __construct()
-    {
-        {$evalcaps}
-        parent::__construct();
-    }
-}
-EOF;
-    return $evalstr;
-}

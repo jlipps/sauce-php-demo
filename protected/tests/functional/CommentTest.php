@@ -1,6 +1,6 @@
 <?php
 
-abstract class CommentTest extends CSeleniumTestCase
+class CommentTest extends CWebDriverTestCase
 {
     /**
      * We use both 'Post' and 'Comment' fixtures.
@@ -37,16 +37,11 @@ abstract class CommentTest extends CSeleniumTestCase
     {
         // verify commenting is successful
         $comment="comment 1";
-        $this->sendKeys($this->elementByName('Comment[author]'),'me');
-        $this->sendKeys($this->elementByName('Comment[email]'),'me@example.com');
-        $this->sendKeys($this->elementByName('Comment[content]'),$comment);
+        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
+        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
+        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
         $this->elementByXpath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Thank you for your comment');
     }
 }
 
-
-eval(onPlatforms('firefox', array(), 'CommentTest'));
-$klass = 'CommentTest_firefox';
-$obj = new $klass();
-print_r($obj);

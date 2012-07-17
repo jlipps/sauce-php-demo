@@ -1,6 +1,6 @@
 <?php
 
-class PostTest extends CSeleniumTestCase
+class PostTest extends CWebDriverTestCase
 {
     /**
      * We use the 'Post' only for this test.
