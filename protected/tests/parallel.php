@@ -22,6 +22,13 @@ function joinPaths() {
 }
 
 
+function getTestMethodsFromFile($file)
+{
+    $methods = array();
+
+}
+
+
 function main($argv)
 {
     $usage = "Usage: parallel.php TEST_PATH/TEST_GLOB\n";
@@ -29,7 +36,13 @@ function main($argv)
         die($usage);
 
     $files = getFiles($argv[1], dirname(__FILE__));
-    print_r($files);
+
+    foreach($files as $file) {
+        $methods = getTestMethodsFromFile($file);
+        foreach($methods as $method) {
+            $all_tests = array($method => $file);
+        }
+    }
 }
 
 if (isset($argv[0]) && $argv[0])
