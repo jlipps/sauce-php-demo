@@ -64,7 +64,6 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     protected function setUpDriver()
     {
         $this->wd = new WebDriver($this->wd_host.':'.$this->wd_port.$this->wd_hub);
-        echo "\n$this->wd_host".':'.$this->wd_port.$this->wd_hub;
     }
 
     protected function setUp()

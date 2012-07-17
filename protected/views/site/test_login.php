@@ -1,4 +1,1 @@
-<?php
-
-?>
-Logged in <?php echo $username ?>;
+Logged in <?php echo $username ?>

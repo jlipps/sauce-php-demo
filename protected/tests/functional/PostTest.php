@@ -28,14 +28,30 @@ class PostTest extends CWebDriverTestCase
         $this->assertTextPresent('Leave a Comment');
     }
 
-    public function testUpdate()
+    public function testUpdateTitle()
     {
-        $new_title = "This is a new title!";
+        $new_body = "This is a new title!";
         $this->login('demo');
-        $this->open('/post/update?id=1');
-        $this->sendKeys($this->elementByName('Post[title]'), $new_title);
+        $this->open('post/update?id=1');
+        $el = $this->elementByName('Post[title]');
+        $el->clear();
+        $this->sendKeys($el, $new_body);
         $this->elByXpath("//input[@value='Save']")->click();
-        $this->assertTextPresent($new_title);
+        $this->assertTextPresent($new_body);
+        $this->assertTextNotPresent($this->f->posts['sample1']['title']);
+    }
+
+    public function testUpdateBody()
+    {
+        $new_body = "This is a new body!";
+        $this->login('demo');
+        $this->open('post/update?id=1');
+        $el = $this->elementByName('Post[content]');
+        $el->clear();
+        $this->sendKeys($el, $new_body);
+        $this->elByXpath("//input[@value='Save']")->click();
+        $this->assertTextPresent($new_body);
+        $this->assertTextNotPresent($this->f->posts['sample1']['content']);
     }
 
 }

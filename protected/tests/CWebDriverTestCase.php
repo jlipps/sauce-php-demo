@@ -56,7 +56,7 @@ class CWebDriverTestCase extends WebDriverTestCase
 
     protected function login($username)
     {
-        $this->open('/site/testLogin?u='.$username);
+        $this->open('site/testLogin?u='.$username);
         $this->waitForText("Logged in $username");
     }
 }
