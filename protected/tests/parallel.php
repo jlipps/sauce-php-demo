@@ -33,38 +33,37 @@ function getTestMethodsFromFile($file)
     return $methods;
 }
 
-function chunkTests($tests, $processes)
-{
-    if ($processes <= 1) {
-        return array($tests);
-    } else {
-        $num_tests = count($tests);
-        $tests_per_set = ceil(($num_tests*1.0) / ($processes*1.0));
-        $sets = array();
-        for ($i=0; $i<$processes; $i++) {
-            $sets[$i] = array();
-            for ($j=0; $j<$tests_per_set; $j++) {
-                if (count($tests))
-                    $sets[$i][] = array_pop($tests);
-            }
-        }
-        return $sets;
-    }
-}
-
 function runTestSets($all_tests, $num_procs)
 {
+    echo "\n";
     $outputs = array();
     $active_procs = array();
     $active_pipes = array();
+    $n_tests = $n_assertions = $n_errors = 0;
+    $errors = array();
+    $start_time = time();
     while (count($all_tests) || count($active_procs)) {
         if (count($active_pipes))
             collectStreamOutput($active_pipes, $outputs);
-        if (count($active_procs))
-            updateProcessStatus($active_procs, $active_pipes, $outputs);
+        if (count($active_procs)) {
+            $stats = updateProcessStatus($active_procs, $active_pipes, $outputs);
+            $n_tests += $stats[0];
+            $n_assertions += $stats[1];
+            $n_errors += $stats[2];
+            foreach($stats[3] as $error)
+                $errors[] = $error;
+        }
         if (count($active_procs) < $num_procs && count($all_tests))
             startNewProcess($all_tests, $active_procs, $active_pipes, $outputs);
     }
+    $n_secs = time() - $start_time;
+    echo "\n\n";
+    foreach ($errors as $i => $error) {
+        $num = $i+1;
+        echo "$num) $error\n\n";
+    }
+    echo "Time: $n_secs seconds\n\n";
+    echo "Tests: $n_tests, Assertions: $n_assertions, Errors: $n_errors\n\n";
 }
 
 function collectStreamOutput($active_pipes, &$outputs)
@@ -89,6 +88,8 @@ function collectStreamOutput($active_pipes, &$outputs)
 
 function updateProcessStatus(&$active_procs, &$active_pipes, $outputs)
 {
+    $total_tests = $total_assertions = $total_errors = 0;
+    $errors = array();
     foreach ($active_procs as $id => $proc) {
         $status = proc_get_status($proc);
         if (!$status['running']) {
@@ -97,16 +98,59 @@ function updateProcessStatus(&$active_procs, &$active_pipes, $outputs)
             fclose($active_pipes[$id][1]);
             fclose($active_pipes[$id][2]);
             proc_close($proc);
-            printImmediateOutput($id, $outputs[$id]);
+            $stats = handleOutput($id, $outputs[$id]);
+            list($n_tests, $n_assertions, $n_errors, $errors) = $stats;
             unset($active_procs[$id]);
             unset($active_pipes[$id]);
+            $total_tests += $n_tests;
+            $total_assertions += $n_assertions;
+            $total_errors = $n_errors;
         }
     }
+    return array($total_tests, $total_assertions, $total_errors, $errors);
 }
 
-function printImmediateOutput($id, $output)
+function handleOutput($id, $output)
 {
-    echo $output."\n";
+    $n_tests = $n_assertions = $n_errors = 0;
+    $errors = array();
+    // first, find dots, Es, etc...
+    preg_match("/^[\.FESI]+$/m", $output, $matches);
+    if (count($matches))
+        echo $matches[0];
+
+    preg_match("/^OK \(([0-9]+) tests?, ([0-9]+) assertions/m", $output, $matches);
+    if (count($matches) == 3) {
+        $n_tests = intval($matches[1]);
+        $n_assertions = intval($matches[2]);
+    } else {
+        // echo "Could not find OK tests\n";
+        // print_r($matches);
+    }
+
+    preg_match("/^Tests: ([0-9]+), Assertions: ([0-9]+), Errors: ([0-9]+)/m", $output, $matches);
+    if (count($matches) == 4) {
+        $n_tests += intval($matches[1]);
+        $n_assertions += intval($matches[2]);
+        $n_errors += intval($matches[3]);
+    } else {
+        // echo "Could not find Failed tests\n";
+        // print_r($matches);
+    }
+
+    preg_match("/^There ((was)|(were)) [0-9]+ error.+\n\n(.+)\nFAIL/Ums", $output, $matches);
+    if (count($matches) == 5) {
+        $error_str = trim($matches[4]);
+        $split_errors = preg_split("/^[0-9]+\) /m", $error_str);
+        foreach ($split_errors as $error) {
+            if (trim($error))
+                $errors[] = trim($error);
+        }
+    } else {
+        // echo "Could not find errors\n";
+        // print_r($matches);
+    }
+    return array($n_tests, $n_assertions, $n_errors, $errors);
 }
 
 function startNewProcess(&$all_tests, &$active_procs, &$active_pipes, &$outputs)
@@ -163,8 +207,6 @@ function main($argv)
             $all_tests[] = array($method, $file);
         }
     }
-
-    $test_sets = chunkTests($all_tests, $processes);
 
     runTestSets($all_tests, $processes);
 }

@@ -64,7 +64,7 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->sess = $this->wd->session($this->browser_name, $this->caps);
-        $this->sess->timeouts()->implicit_wait(array('ms'=>30000));
+        $this->sess->timeouts()->implicit_wait(array('ms'=>5000));
     }
 
     public function tearDown()
