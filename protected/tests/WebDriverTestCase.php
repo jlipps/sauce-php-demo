@@ -36,12 +36,6 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     )
     {
         parent::__construct($name, $data, $dataName);
-        $this->setUpSpecificBrowser(array(
-            'wd_host' => $wd_host,
-            'wd_port' => $wd_port,
-            'wd_hub' => $wd_hub,
-            'name' => $browser_name,
-            'caps' => $caps));
     }
 
     public function setUpSpecificBrowser($browser)
@@ -52,10 +46,9 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
         $using_sauce = isset($browser['sauce']) && $browser['sauce'];
         $def_host = $using_sauce ? SAUCE_HOST : $this->wd_host;
         $def_port = $using_sauce ? '80': $this->wd_port;
-        $def_hub = $using_sauce ? '' : $this->wd_hub;
         $this->wd_host = $browser['wd_host'] ?: $def_host;
         $this->wd_port = $browser['wd_port'] ?: $def_port;
-        $this->wd_hub = $browser['wd_hub'] ?: $def_hub;
+        $this->wd_hub = $browser['wd_hub'] ?: $this->wd_hub;
         $this->browser_name = $browser['name'] ?: $this->browser_name;
         $this->caps = $browser['caps'] ?: $this->caps;
         $this->setUpDriver();
@@ -69,7 +62,7 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         if (!isset($this->caps['name']))
-            $this->caps['name'] = $this->getName();
+            $this->caps['name'] = get_called_class().'::'.$this->getName();
         $this->sess = $this->wd->session($this->browser_name, $this->caps);
         $this->sess->timeouts()->implicit_wait(array('ms'=>5000));
     }

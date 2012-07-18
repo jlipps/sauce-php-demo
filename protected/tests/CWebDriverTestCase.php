@@ -14,28 +14,36 @@ class CWebDriverTestCase extends WebDriverTestCase
 
     public static $browsers = array(
         array(
-            'name'=>'firefox'
+            'name' => 'firefox'
         ),
-        // array(
-        //     'name'=>'chrome'
-        // )
+        array(
+            'name' => 'chrome'
+        )
     );
 
     public static $browsers_sauce = array(
         array(
-            'name'=>'firefox',
-            'sauce'=>true,
+            'name' => 'firefox',
+            'sauce' => true,
             'caps' => array(
                 'platform' => 'Windows 2008',
                 'version' => '13'
             )
         ),
         array(
-            'name'=>'chrome',
-            'sauce'=>true,
+            'name' => 'chrome',
+            'sauce' => true,
             'caps' => array(
                 'platform' => 'Windows 2008',
                 'version' => ''
+            )
+        ),
+        array(
+            'name' => 'internet explorer',
+            'sauce' => true,
+            'caps' => array(
+                'platform' => 'Windows 2003',
+                'version' => '6'
             )
         )
     );
