@@ -41,7 +41,9 @@ class CommentTest extends CWebDriverTestCase
         $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
         $this->sendKeys($this->elementByName('Comment[content]'), $comment);
         $this->elementByXpath("//input[@value='Submit']")->click();
-        $this->waitForText('Thank you for your comment');
+        $this->waitForText('Yii Blog Demo');
+        $comments=Comment::model()->findAll();
+        $this->assertEquals($comments[0]->attributes['content'], $comment);
     }
 }
 

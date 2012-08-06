@@ -2,7 +2,6 @@
 
 require_once('PHPUnit/Runner/Version.php');
 
-
 use WebDriver\WebDriver;
 
 define('SAUCE_HOST', 'http://'.getenv('SAUCE_USERNAME').':'.getenv('SAUCE_ACCESS_KEY').'@ondemand.saucelabs.com');
@@ -70,7 +69,6 @@ abstract class WebDriverTestCase extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         $this->sess->close();
-        //$this->stop();
     }
 
     public static function suite($className)

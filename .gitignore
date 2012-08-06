@@ -7,3 +7,4 @@ protected/data/*.db
 themes/classic/views/
 *.swp
 *.un~
+*.db

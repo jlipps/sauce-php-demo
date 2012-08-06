@@ -18,7 +18,7 @@ class CWebDriverTestCase extends WebDriverTestCase
         ),
         array(
             'name' => 'chrome'
-        )
+        ),
     );
 
     public static $browsers_sauce = array(

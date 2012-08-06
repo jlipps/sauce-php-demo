@@ -2,14 +2,14 @@
 
 class SiteTest extends CWebDriverTestCase
 {
-    public function testContact()
+    public function testContactFailsWithoutBody()
     {
         $this->open('site/contact');
         $this->assertTextPresent('Contact Us');
         $el = $this->elementByName('ContactForm[name]');
-        $this->sendKeys($el,'tester');
-        $this->sendKeys($this->elementByName('ContactForm[email]'),'tester@example.com');
-        $this->sendKeys($this->elementByName('ContactForm[subject]'),'test subject');
+        $this->sendKeys($el, 'tester');
+        $this->sendKeys($this->elementByName('ContactForm[email]'), 'tester@example.com');
+        $this->sendKeys($this->elementByName('ContactForm[subject]'), 'test subject');
         $this->elementByXpath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Body cannot be blank.');
     }
