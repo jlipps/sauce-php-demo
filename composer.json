@@ -1,6 +1,6 @@
 {
     "require": {
-        "instaclick/php-webdriver": ">=0.0"
+        "jlipps/paraunit": ">=0.0"
     },
     "minimum-stability": "dev"
 }

@@ -5,8 +5,34 @@
  * Make sure the URL ends with a slash so that we can use relative URLs in test cases
  */
 define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
+define('SAUCE_HOST', getenv('SAUCE_USERNAME').':'.getenv('SAUCE_ACCESS_KEY').'@ondemand.saucelabs.com');
 
-class CWebDriverTestCase extends WebDriverTestCase
+class SeleniumInfo
+{
+    public static function Host()
+    {
+        return getenv('SAUCE') ? SAUCE_HOST : 'localhost';
+    }
+
+    public static function Port()
+    {
+        return getenv('SAUCE') ? 80 : 4444;
+    }
+
+    public static function SessionStrategy()
+    {
+        return getenv('SAUCE') ? 'isolated' : 'shared';
+    }
+
+    public static function __callStatic($name, $arguments)
+    {
+        echo $name."\n".$arguments."\n";
+    }
+}
+
+SeleniumInfo::$browsers;
+
+class CWebDriverTestCase extends PHPUnit_Extensions_Selenium2TestCase
 {
 
     protected $fixtures = false;
@@ -14,10 +40,12 @@ class CWebDriverTestCase extends WebDriverTestCase
 
     public static $browsers = array(
         array(
-            'name' => 'firefox'
+            'name' => 'firefox',
+            'sessionStrategy' => 'isolated'
         ),
         array(
-            'name' => 'chrome'
+            'name' => 'chrome',
+            'sessionStrategy' => 'isolated'
         ),
     );
 
