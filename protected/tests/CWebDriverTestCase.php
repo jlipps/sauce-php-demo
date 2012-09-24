@@ -5,34 +5,10 @@
  * Make sure the URL ends with a slash so that we can use relative URLs in test cases
  */
 define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
-define('SAUCE_HOST', getenv('SAUCE_USERNAME').':'.getenv('SAUCE_ACCESS_KEY').'@ondemand.saucelabs.com');
 
-class SeleniumInfo
-{
-    public static function Host()
-    {
-        return getenv('SAUCE') ? SAUCE_HOST : 'localhost';
-    }
+require_once '/Users/jlipps/Code/sausage/src/Sauce/Sausage/WebDriverTestCase.php';
 
-    public static function Port()
-    {
-        return getenv('SAUCE') ? 80 : 4444;
-    }
-
-    public static function SessionStrategy()
-    {
-        return getenv('SAUCE') ? 'isolated' : 'shared';
-    }
-
-    public static function __callStatic($name, $arguments)
-    {
-        echo $name."\n".$arguments."\n";
-    }
-}
-
-SeleniumInfo::$browsers;
-
-class CWebDriverTestCase extends PHPUnit_Extensions_Selenium2TestCase
+class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
 {
 
     protected $fixtures = false;
@@ -40,39 +16,33 @@ class CWebDriverTestCase extends PHPUnit_Extensions_Selenium2TestCase
 
     public static $browsers = array(
         array(
-            'name' => 'firefox',
+            'browserName' => 'firefox',
             'sessionStrategy' => 'isolated'
         ),
         array(
-            'name' => 'chrome',
+            'browserName' => 'chrome',
             'sessionStrategy' => 'isolated'
-        ),
-    );
-
-    public static $browsers_sauce = array(
-        array(
-            'name' => 'firefox',
-            'sauce' => true,
-            'caps' => array(
-                'platform' => 'Windows 2008',
-                'version' => '13'
-            )
-        ),
-        array(
-            'name' => 'chrome',
-            'sauce' => true,
-            'caps' => array(
-                'platform' => 'Windows 2008',
-                'version' => ''
-            )
-        ),
-        array(
-            'name' => 'internet explorer',
-            'sauce' => true,
-            'caps' => array(
-                'platform' => 'Windows 2003',
-                'version' => '6'
-            )
+        //),
+        //array(
+            //'browserName' => 'firefox',
+            //'desiredCapabilities' => array(
+                //'os' => 'VISTA',
+                //'version' => '13'
+            //)
+        //),
+        //array(
+            //'browserName' => 'chrome',
+            //'desiredCapabilities' => array(
+                //'platform' => 'VISTA',
+                //'version' => ''
+            //)
+        //),
+        //array(
+            //'browserName' => 'internet explorer',
+            //'desiredCapabilities' => array(
+                //'platform' => 'XP',
+                //'version' => '6'
+            //)
         )
     );
 
@@ -87,7 +57,7 @@ class CWebDriverTestCase extends PHPUnit_Extensions_Selenium2TestCase
         if (strpos($url, TEST_BASE_URL) === false) {
             $url = TEST_BASE_URL.'/'.$url;
         }
-        return $this->sess->open($url);
+        return $this->url($url);
     }
 
     protected function login($username)
