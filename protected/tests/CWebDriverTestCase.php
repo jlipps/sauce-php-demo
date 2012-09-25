@@ -17,10 +17,10 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
     protected $start_url = TEST_BASE_URL;
 
     public static $browsers = array(
-        //array(
-            //'browserName' => 'firefox',
-            //'sessionStrategy' => 'isolated',
-            //'local' => true
+        array(
+            'browserName' => 'firefox',
+            'sessionStrategy' => 'isolated',
+            'local' => true
         //),
         //array(
             //'browserName' => 'chrome',
@@ -40,7 +40,7 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
                 //'platform' => 'Mac 10.6',
                 //'version' => '5'
             //)
-        ),
+        )
     );
 
     public function setUp()
