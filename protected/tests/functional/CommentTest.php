@@ -32,7 +32,7 @@ class CommentTest extends CWebDriverTestCase
     public function testAdd()
     {
         $this->open('post/1/xyz');
-       // verify commenting is successful
+        // verify commenting is successful
         $comment="comment 1";
         $this->byName('Comment[author]')->value('me');
         $this->byName('Comment[email]')->value('me@example.com');
