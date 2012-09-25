@@ -6,6 +6,7 @@
  */
 define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
 
+// just here to grab dev versions of Sausage for demo
 require_once '/Users/jlipps/Code/sausage/src/Sauce/Sausage/WebDriverTestCase.php';
 
 class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
@@ -13,6 +14,7 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
 
     protected $fixtures = false;
     protected $f = false;
+    protected $start_url = TEST_BASE_URL;
 
     public static $browsers = array(
         //array(
@@ -20,17 +22,10 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
             //'sessionStrategy' => 'isolated',
             //'local' => true
         //),
-        array(
-            'browserName' => 'chrome',
-            'sessionStrategy' => 'isolated',
-            'local' => true
-        //),
         //array(
-            //'browserName' => 'firefox',
-            //'desiredCapabilities' => array(
-                //'os' => 'VISTA',
-                //'version' => '13'
-            //)
+            //'browserName' => 'chrome',
+            //'sessionStrategy' => 'isolated',
+            //'local' => true
         //),
         //array(
             //'browserName' => 'chrome',
@@ -40,12 +35,12 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
             //)
         //),
         //array(
-            //'browserName' => 'internet explorer',
+            //'browserName' => 'iPad',
             //'desiredCapabilities' => array(
-                //'platform' => 'XP',
-                //'version' => '6'
+                //'platform' => 'Mac 10.6',
+                //'version' => '5'
             //)
-        )
+        ),
     );
 
     public function setUp()
@@ -59,7 +54,7 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
         if (strpos($url, TEST_BASE_URL) === false) {
             $url = TEST_BASE_URL.'/'.$url;
         }
-        return $this->url($url);
+        $this->url($url);
     }
 
     protected function login($username)

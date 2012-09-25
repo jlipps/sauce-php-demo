@@ -7,9 +7,9 @@ class SiteTest extends CWebDriverTestCase
         $this->open('site/contact');
         $this->assertTextPresent('Contact Us');
         $el = $this->byName('ContactForm[name]');
-        $this->sendKeys($el, 'tester');
-        $this->sendKeys($this->byName('ContactForm[email]'), 'tester@example.com');
-        $this->sendKeys($this->byName('ContactForm[subject]'), 'test subject');
+        $el->value('tester');
+        $this->byName('ContactForm[email]')->value('tester@example.com');
+        $this->byName('ContactForm[subject]')->value('test subject');
         $this->byXPath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Body cannot be blank.');
     }
@@ -27,7 +27,7 @@ class SiteTest extends CWebDriverTestCase
     {
         $this->loginSetup();
         // test login process, including validation
-        $this->sendKeys($this->byName('LoginForm[username]'), 'demo');
+        $this->byName('LoginForm[username]')->value('demo');
         $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Password cannot be blank.');
     }
@@ -36,7 +36,7 @@ class SiteTest extends CWebDriverTestCase
     {
         $this->loginSetup();
         // test login process, including validation
-        $this->sendKeys($this->byName('LoginForm[password]'), 'demo');
+        $this->byName('LoginForm[password]')->value('demo');
         $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Username cannot be blank.');
     }
@@ -44,8 +44,8 @@ class SiteTest extends CWebDriverTestCase
     public function testLogin()
     {
         $this->loginSetup();
-        $this->sendKeys($this->byName('LoginForm[username]'), 'demo');
-        $this->sendKeys($this->byName('LoginForm[password]'), 'demo');
+        $this->byName('LoginForm[username]')->value('demo');
+        $this->byName('LoginForm[password]')->value('demo');
         $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Logout');
     }

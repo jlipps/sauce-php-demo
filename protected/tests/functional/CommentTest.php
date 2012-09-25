@@ -34,9 +34,9 @@ class CommentTest extends CWebDriverTestCase
         $this->open('post/1/xyz');
        // verify commenting is successful
         $comment="comment 1";
-        $this->sendKeys($this->byName('Comment[author]'), 'me');
-        $this->sendKeys($this->byName('Comment[email]'), 'me@example.com');
-        $this->sendKeys($this->byName('Comment[content]'), $comment);
+        $this->byName('Comment[author]')->value('me');
+        $this->byName('Comment[email]')->value('me@example.com');
+        $this->byName('Comment[content]')->value($comment);
         $this->byXPath("//input[@value='Submit']")->click();
         $this->waitForText('Yii Blog Demo');
         $comments=Comment::model()->findAll();

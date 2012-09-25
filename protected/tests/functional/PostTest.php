@@ -35,7 +35,7 @@ class PostTest extends CWebDriverTestCase
         $this->open('post/update?id=1');
         $el = $this->byName('Post[title]');
         $el->clear();
-        $this->sendKeys($el, $new_body);
+        $el->value($new_body);
         $this->byXPath("//input[@value='Save']")->click();
         $this->assertTextPresent($new_body);
         $this->assertTextNotPresent($this->f->posts['sample1']['title']);
@@ -48,7 +48,7 @@ class PostTest extends CWebDriverTestCase
         $this->open('post/update?id=1');
         $el = $this->byName('Post[content]');
         $el->clear();
-        $this->sendKeys($el, $new_body);
+        $el->value($new_body);
         $this->byXPath("//input[@value='Save']")->click();
         $this->assertTextPresent($new_body);
         $this->assertTextNotPresent($this->f->posts['sample1']['content']);
