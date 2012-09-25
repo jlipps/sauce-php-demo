@@ -6,11 +6,11 @@ class SiteTest extends CWebDriverTestCase
     {
         $this->open('site/contact');
         $this->assertTextPresent('Contact Us');
-        $el = $this->elementByName('ContactForm[name]');
+        $el = $this->byName('ContactForm[name]');
         $this->sendKeys($el, 'tester');
-        $this->sendKeys($this->elementByName('ContactForm[email]'), 'tester@example.com');
-        $this->sendKeys($this->elementByName('ContactForm[subject]'), 'test subject');
-        $this->elementByXpath("//input[@value='Submit']")->click();
+        $this->sendKeys($this->byName('ContactForm[email]'), 'tester@example.com');
+        $this->sendKeys($this->byName('ContactForm[subject]'), 'test subject');
+        $this->byXPath("//input[@value='Submit']")->click();
         $this->assertTextPresent('Body cannot be blank.');
     }
 
@@ -19,16 +19,16 @@ class SiteTest extends CWebDriverTestCase
         $this->open('');
         // ensure the user is logged out
         if($this->isTextPresent('Logout'))
-            $this->elByLink('Logout')->click();
-        $this->elByLink('Login')->click();
+            $this->byLinkText('Logout')->click();
+        $this->byLinkText('Login')->click();
     }
 
     public function testLoginDoesntWorkWithBlankPassword()
     {
         $this->loginSetup();
         // test login process, including validation
-        $this->sendKeys($this->elByName('LoginForm[username]'), 'demo');
-        $this->elByXpath("//input[@value='Login']")->click();
+        $this->sendKeys($this->byName('LoginForm[username]'), 'demo');
+        $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Password cannot be blank.');
     }
 
@@ -36,17 +36,17 @@ class SiteTest extends CWebDriverTestCase
     {
         $this->loginSetup();
         // test login process, including validation
-        $this->sendKeys($this->elByName('LoginForm[password]'), 'demo');
-        $this->elByXpath("//input[@value='Login']")->click();
+        $this->sendKeys($this->byName('LoginForm[password]'), 'demo');
+        $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Username cannot be blank.');
     }
 
     public function testLogin()
     {
         $this->loginSetup();
-        $this->sendKeys($this->elByName('LoginForm[username]'), 'demo');
-        $this->sendKeys($this->elByName('LoginForm[password]'), 'demo');
-        $this->elByXpath("//input[@value='Login']")->click();
+        $this->sendKeys($this->byName('LoginForm[username]'), 'demo');
+        $this->sendKeys($this->byName('LoginForm[password]'), 'demo');
+        $this->byXPath("//input[@value='Login']")->click();
         $this->assertTextPresent('Logout');
     }
 
@@ -54,7 +54,7 @@ class SiteTest extends CWebDriverTestCase
     {
         $this->testLogin();
         $this->assertTextNotPresent('Login');
-        $this->elByLink('Logout')->click();
+        $this->byLinkText('Logout')->click();
         $this->assertTextPresent('Login');
     }
 }

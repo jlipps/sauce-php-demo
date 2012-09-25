@@ -11,23 +11,19 @@ class CommentTest extends CWebDriverTestCase
         'comments'=>'Comment',
     );
 
-    public function setUp()
-    {
-        parent::setUp();
-        $this->open('post/1/xyz');
-    }
-
     public function testDisplay()
     {
+        $this->open('post/1/xyz');
         // verify the sample post title exists
         $this->waitForText($this->f->posts['sample1']['title']);
-        $this->elementByName("Comment[author]");
+        $this->byName("Comment[author]");
     }
 
     public function testValidation()
     {
+        $this->open('post/1/xyz');
         // verify validation errors
-        $this->elementByXpath("//input[@value='Submit']")->click();
+        $this->byXPath("//input[@value='Submit']")->click();
         $this->waitForText('Name cannot be blank.');
         $this->waitForText('Email cannot be blank.');
         $this->waitForText('Comment cannot be blank.');
@@ -35,12 +31,13 @@ class CommentTest extends CWebDriverTestCase
 
     public function testAdd()
     {
+        $this->open('post/1/xyz');
        // verify commenting is successful
         $comment="comment 1";
-        $this->sendKeys($this->elementByName('Comment[author]'), 'me');
-        $this->sendKeys($this->elementByName('Comment[email]'), 'me@example.com');
-        $this->sendKeys($this->elementByName('Comment[content]'), $comment);
-        $this->elementByXpath("//input[@value='Submit']")->click();
+        $this->sendKeys($this->byName('Comment[author]'), 'me');
+        $this->sendKeys($this->byName('Comment[email]'), 'me@example.com');
+        $this->sendKeys($this->byName('Comment[content]'), $comment);
+        $this->byXPath("//input[@value='Submit']")->click();
         $this->waitForText('Yii Blog Demo');
         $comments=Comment::model()->findAll();
         $this->assertEquals($comments[0]->attributes['content'], $comment);

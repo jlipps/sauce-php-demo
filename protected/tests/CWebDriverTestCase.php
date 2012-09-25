@@ -15,13 +15,15 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
     protected $f = false;
 
     public static $browsers = array(
-        array(
-            'browserName' => 'firefox',
-            'sessionStrategy' => 'isolated'
-        ),
+        //array(
+            //'browserName' => 'firefox',
+            //'sessionStrategy' => 'isolated',
+            //'local' => true
+        //),
         array(
             'browserName' => 'chrome',
-            'sessionStrategy' => 'isolated'
+            'sessionStrategy' => 'isolated',
+            'local' => true
         //),
         //array(
             //'browserName' => 'firefox',
@@ -46,7 +48,7 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
         )
     );
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->f = new CWebFixture($this->fixtures);

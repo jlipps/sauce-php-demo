@@ -33,10 +33,10 @@ class PostTest extends CWebDriverTestCase
         $new_body = "This is a new title!";
         $this->login('demo');
         $this->open('post/update?id=1');
-        $el = $this->elementByName('Post[title]');
+        $el = $this->byName('Post[title]');
         $el->clear();
         $this->sendKeys($el, $new_body);
-        $this->elByXpath("//input[@value='Save']")->click();
+        $this->byXPath("//input[@value='Save']")->click();
         $this->assertTextPresent($new_body);
         $this->assertTextNotPresent($this->f->posts['sample1']['title']);
     }
@@ -46,10 +46,10 @@ class PostTest extends CWebDriverTestCase
         $new_body = "This is a new body!";
         $this->login('demo');
         $this->open('post/update?id=1');
-        $el = $this->elementByName('Post[content]');
+        $el = $this->byName('Post[content]');
         $el->clear();
         $this->sendKeys($el, $new_body);
-        $this->elByXpath("//input[@value='Save']")->click();
+        $this->byXPath("//input[@value='Save']")->click();
         $this->assertTextPresent($new_body);
         $this->assertTextNotPresent($this->f->posts['sample1']['content']);
     }
