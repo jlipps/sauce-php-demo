@@ -6,9 +6,6 @@
  */
 define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
 
-// just here to grab dev versions of Sausage for demo
-require_once '/Users/jlipps/Code/sausage/src/Sauce/Sausage/WebDriverTestCase.php';
-
 class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
 {
 
