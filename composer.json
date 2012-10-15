@@ -1,7 +1,5 @@
 {
     "require": {
-        "jlipps/paraunit": "dev-master",
-        "sauce/sausage": "dev-master"
-    },
-    "minimum-stability": "dev"
+        "sauce/sausage": ">=0.5"
+    }
 }
