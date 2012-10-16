@@ -12,7 +12,7 @@ class PostTest extends CWebDriverTestCase
 
     public function testIndex()
     {
-        $this->open('');
+        $this->url('');
         // verify header title exists
         $this->assertTextPresent('Yii Blog Demo');
         // verify the sample post title exists
@@ -21,7 +21,7 @@ class PostTest extends CWebDriverTestCase
 
     public function testView()
     {
-        $this->open('post/1/xyz');
+        $this->url('post/1/xyz');
         // verify the sample post title exists
         $this->assertTextPresent($this->f->posts['sample1']['title']);
         // verify comment form exists
@@ -32,7 +32,7 @@ class PostTest extends CWebDriverTestCase
     {
         $new_body = "This is a new title!";
         $this->login('demo');
-        $this->open('post/update?id=1');
+        $this->url('post/update?id=1');
         $el = $this->byName('Post[title]');
         $el->clear();
         $el->value($new_body);
@@ -45,7 +45,7 @@ class PostTest extends CWebDriverTestCase
     {
         $new_body = "This is a new body!";
         $this->login('demo');
-        $this->open('post/update?id=1');
+        $this->url('post/update?id=1');
         $el = $this->byName('Post[content]');
         $el->clear();
         $el->value($new_body);

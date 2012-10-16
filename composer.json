@@ -1,5 +1,6 @@
 {
     "require": {
-        "sauce/sausage": ">=0.5"
-    }
+        "sauce/sausage": "dev-master"
+    },
+    "minimum-stability": "dev"
 }

@@ -4,7 +4,7 @@ class SiteTest extends CWebDriverTestCase
 {
     public function testContactFailsWithoutBody()
     {
-        $this->open('site/contact');
+        $this->url('site/contact');
         $this->assertTextPresent('Contact Us');
         $el = $this->byName('ContactForm[name]');
         $el->value('tester');
@@ -16,7 +16,7 @@ class SiteTest extends CWebDriverTestCase
 
     protected function loginSetup()
     {
-        $this->open('');
+        $this->url('');
         // ensure the user is logged out
         if($this->isTextPresent('Logout'))
             $this->byLinkText('Logout')->click();

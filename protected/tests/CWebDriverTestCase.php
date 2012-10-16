@@ -4,26 +4,24 @@
  * Change the following URL based on your server configuration
  * Make sure the URL ends with a slash so that we can use relative URLs in test cases
  */
-define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php');
+define('TEST_BASE_URL','http://localhost/yiidemo/index-test.php/');
 
 class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
 {
 
     protected $fixtures = false;
     protected $f = false;
-    protected $start_url = TEST_BASE_URL;
+    protected $base_url = TEST_BASE_URL;
 
     public static $browsers = array(
         array(
             'browserName' => 'firefox',
-            'sessionStrategy' => 'isolated',
             'local' => true
         ),
-        //array(
-            //'browserName' => 'chrome',
-            //'sessionStrategy' => 'isolated',
-            //'local' => true
-        //),
+        array(
+            'browserName' => 'chrome',
+            'local' => true
+        ),
         //array(
             //'browserName' => 'chrome',
             //'desiredCapabilities' => array(
@@ -32,10 +30,10 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
             //)
         //),
         //array(
-            //'browserName' => 'iPad',
+            //'browserName' => 'iexplore',
             //'desiredCapabilities' => array(
-                //'platform' => 'Mac 10.6',
-                //'version' => '5'
+                //'platform' => 'XP',
+                //'version' => '6'
             //)
         //)
     );
@@ -46,17 +44,9 @@ class CWebDriverTestCase extends \Sauce\Sausage\WebDriverTestCase
         $this->f = new CWebFixture($this->fixtures);
     }
 
-    protected function open($url)
-    {
-        if (strpos($url, TEST_BASE_URL) === false) {
-            $url = TEST_BASE_URL.'/'.$url;
-        }
-        $this->url($url);
-    }
-
     protected function login($username)
     {
-        $this->open('site/testLogin?u='.$username);
+        $this->url('site/testLogin?u='.$username);
         $this->waitForText("Logged in $username");
     }
 }
